@@ -1,21 +1,21 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { initBoard } from "../actions";
+import { initBoard, tileClicked } from "../actions";
 import { MOBILE_BREAK_POINT } from "../config.js";
+
 const Board = styled.div`
-  width: 50vw;
-  @media only screen and (max-width: ${MOBILE_BREAK_POINT}) {
-    width: 90vw;
-  }
+  margin: 0 auto;
+  width: fit-content;
 `;
 const Row = styled.div`
   display: flex;
+  width: fit-content;
 `;
 const Tile = styled.div`
   height: 10vw;
   width: 10vw;
-  background-color: ${({color}) => (color ? color : "white")};
+  background-color: ${({ color }) => (color ? color : "white")};
   border: 1px solid gray;
 `;
 class GameBoard extends Component {
@@ -23,7 +23,7 @@ class GameBoard extends Component {
     this.props.initBoard();
   };
   render() {
-    const { tilesColors, tilesVisibleState } = this.props;
+    const { tilesColors, tilesVisibleState, tileClicked } = this.props;
     return (
       <Board>
         {tilesColors.map((row, rowIndex) => (
@@ -31,9 +31,12 @@ class GameBoard extends Component {
             {row.map((tile, columnIndex) => {
               return (
                 <Tile
-                  color={tile
-                    // tilesVisibleState[rowIndex][columnIndex] ? tile : undefined
+                  color={
+                    tilesVisibleState[rowIndex][columnIndex] && tile
+                      ? tile
+                      : undefined
                   }
+                  onClick={() => tileClicked(rowIndex, columnIndex)}
                 />
               );
             })}
@@ -47,6 +50,6 @@ const mapStateToProps = ({ gameBoard }) => ({
   tilesColors: gameBoard.tilesColors,
   tilesVisibleState: gameBoard.tilesVisibleState
 });
-const mapDispatchToProps = { initBoard };
+const mapDispatchToProps = { initBoard, tileClicked };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameBoard);

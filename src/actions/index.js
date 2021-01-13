@@ -1,1 +1,1 @@
-export { initBoard } from "./gameBoard";
+export { initBoard, tileClicked } from "./gameBoard";

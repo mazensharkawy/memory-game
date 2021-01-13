@@ -3,7 +3,7 @@ const COLORS_LIST = [
   "gray",
   "black",
   "maroon",
-  "white",
+  "Cornsilk",
   "pink",
   "indigo",
   "fuchsia",
@@ -59,10 +59,17 @@ export default (state = initialState, action) => {
     case actionTypes.INIT_BOARD:
       //2D array containing the State
       let tilesVisibleState = Array.apply(null, Array(state.size)).map(() =>
-        Array.apply(null, Array(state.size)).map(() => true)
+        Array.apply(null, Array(state.size)).map(() => false)
       );
       let tilesColors = getRandomTiles(state.size);
       return { ...state, ...payload, tilesColors, tilesVisibleState };
+    case actionTypes.TILE_CLICKED:
+      const { rowIndex, columnIndex } = payload;
+      const visibleTiles = state.tilesVisibleState;
+      visibleTiles[rowIndex][columnIndex] = !visibleTiles[rowIndex][
+        columnIndex
+      ];
+      return { ...state, tilesVisibleState: [...visibleTiles] };
 
     default:
       return state;
