@@ -20,18 +20,15 @@ const Tile = styled.div`
 `;
 class GameBoard extends Component {
   componentDidMount = () => {
-    console.log("compoentdidmount", this.props.initBoard);
     this.props.initBoard();
   };
   render() {
     const { tilesColors, tilesVisibleState } = this.props;
-    console.log({ tilesColors, tilesVisibleState });
     return (
       <Board>
         {tilesColors.map((row, rowIndex) => (
           <Row>
             {row.map((tile, columnIndex) => {
-              console.log({ tile });
               return (
                 <Tile
                   color={tile
