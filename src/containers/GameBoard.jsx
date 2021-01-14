@@ -2,7 +2,11 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { initBoard, tileClicked } from "../actions";
-import { MOBILE_BREAK_POINT } from "../config.js";
+import {
+  MOBILE_BREAK_POINT,
+  TABLET_CONDITION,
+  LARGE_SCREEN_BREAK_POINT
+} from "../config.js";
 
 const Board = styled.div`
   margin: 0 auto;
@@ -13,12 +17,24 @@ const Row = styled.div`
   width: fit-content;
 `;
 const Tile = styled.div`
-  height: 10vw;
-  width: 10vw;
+  width: ${({ size }) => 40.0 / size}vw;
+  height: ${({ size }) => 40.0 / size}vw;
   background-color: ${({ color }) => (color ? color : "white")};
   transition: background-color 0.5s ease-out;
   border: 1px solid gray;
   cursor: pointer;
+  @media only screen and (max-width: ${MOBILE_BREAK_POINT}) {
+    width: ${({ size }) => 90.0 / size}vw;
+    height: ${({ size }) => 90.0 / size}vw;
+  }
+  @media only screen and ${TABLET_CONDITION} {
+    width: ${({ size }) => 70.0 / size}vw;
+    height: ${({ size }) => 70.0 / size}vw;
+  }
+  @media only screen and (min-width: ${LARGE_SCREEN_BREAK_POINT}) {
+    width: ${({ size }) => 760.0 / size}px;
+    height: ${({ size }) => 760.0 / size}px;
+  }
 `;
 class GameBoard extends Component {
   componentDidMount = () => {
@@ -35,7 +51,7 @@ class GameBoard extends Component {
     return isVisible;
   };
   render() {
-    const { tilesColors, tilesVisibleState, tileClicked } = this.props;
+    const { tilesColors, tilesVisibleState, tileClicked, size } = this.props;
     return (
       <Board>
         {tilesColors.map((row, rowIndex) => (
@@ -45,6 +61,7 @@ class GameBoard extends Component {
                 <Tile
                   color={this.isTileVisible(rowIndex, columnIndex) && tile}
                   onClick={() => tileClicked(rowIndex, columnIndex)}
+                  size={size}
                 />
               );
             })}
@@ -57,7 +74,8 @@ class GameBoard extends Component {
 const mapStateToProps = ({ gameBoard }) => ({
   tilesColors: gameBoard.tilesColors,
   tilesVisibleState: gameBoard.tilesVisibleState,
-  temporarilyVisible: gameBoard.temporarilyVisible
+  temporarilyVisible: gameBoard.temporarilyVisible,
+  size: gameBoard.size
 });
 const mapDispatchToProps = { initBoard, tileClicked };
 
