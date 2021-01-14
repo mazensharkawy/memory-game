@@ -1,2 +1,3 @@
 export const INIT_BOARD = "INIT_BOARD"
-export const TILE_CLICKED = "TILE_CLICKED"
+export const SET_TILES = "SET_TILES"
+export const LOCK_BOARD = "LOCK_BOARD"

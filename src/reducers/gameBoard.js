@@ -21,8 +21,10 @@ const COLORS_LIST = [
 ];
 const initialState = {
   size: 4,
-  tilesVisibleContent: [],
-  tilesColors: []
+  tilesVisibleState: [],
+  tilesColors: [],
+  temporarilyVisible: [],
+  isBoardLocked: false
 };
 const getRandomColor = colorsLeft => {
   let notFound = true,
@@ -63,14 +65,19 @@ export default (state = initialState, action) => {
       );
       let tilesColors = getRandomTiles(state.size);
       return { ...state, ...payload, tilesColors, tilesVisibleState };
-    case actionTypes.TILE_CLICKED:
-      const { rowIndex, columnIndex } = payload;
-      const visibleTiles = state.tilesVisibleState;
-      visibleTiles[rowIndex][columnIndex] = !visibleTiles[rowIndex][
-        columnIndex
-      ];
-      return { ...state, tilesVisibleState: [...visibleTiles] };
-
+    case actionTypes.SET_TILES:
+      const { visibleTiles, temporarilyVisible } = payload;
+      return {
+        ...state,
+        tilesVisibleState: [...visibleTiles],
+        temporarilyVisible: [...temporarilyVisible],
+        isBoardLocked: false
+      };
+    case actionTypes.LOCK_BOARD:
+      return {
+        ...state,
+        isBoardLocked: true
+      };
     default:
       return state;
   }
