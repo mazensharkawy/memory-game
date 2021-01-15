@@ -31,7 +31,7 @@ export default (state = initialState, action) => {
     case actionTypes.INCREMENT_SCORE:
       return {
         ...state,
-        currentScore: state.score + 2,
+        currentScore: state.currentScore + 2,
         cumulativeScore: state.cumulativeScore + 2
       };
     case actionTypes.NEXT_LEVEL:
