@@ -1,8 +1,9 @@
 import * as actionTypes from "../actions/actionTypes";
 
 const initialState = {
-  size: 4,
-  score: 0,
+  size: 2,
+  currentScore: 0,
+  cumulativeScore: 0,
   tilesVisibleState: [],
   tilesColors: [],
   temporarilyVisible: [],
@@ -13,7 +14,6 @@ export default (state = initialState, action) => {
   switch (type) {
     case actionTypes.INIT_BOARD:
       //2D array containing the State
-      
       return { ...state, ...payload };
     case actionTypes.SET_TILES:
       const { visibleTiles, temporarilyVisible } = payload;
@@ -31,7 +31,13 @@ export default (state = initialState, action) => {
     case actionTypes.INCREMENT_SCORE:
       return {
         ...state,
-        score: state.score + 2
+        currentScore: state.score + 2,
+        cumulativeScore: state.cumulativeScore + 2
+      };
+    case actionTypes.NEXT_LEVEL:
+      return {
+        ...state,
+        size: state.size < 8 ? state.size * 2 : 2
       };
     default:
       return state;

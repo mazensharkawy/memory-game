@@ -21,7 +21,8 @@ const COLORS_LIST = [
   "deepskyblue"
 ];
 
-const TIMEOUT_MS = 500;
+const TILE_TIMEOUT_MS = 500;
+const NEXT_LEVEL_TIMEOUT_MS = 750;
 
 const getRandomColor = colorsLeft => {
   let notFound = true,
@@ -54,14 +55,17 @@ const getRandomTiles = size => {
   return tilesColors;
 };
 
-export const initBoard = size => {
+export const initBoard = () => {
   return (dispatch, getState) => {
-    size = size || getState()?.gameBoard?.size;
+    const preSavedSize = localStorage.getItem("size") || 0;
+    const size = Math.max(preSavedSize, getState()?.gameBoard?.size);
     let tilesVisibleState = Array.apply(null, Array(size)).map(() =>
       Array.apply(null, Array(size)).map(() => false)
     );
     let tilesColors = getRandomTiles(size);
-    dispatch(setBoard({ tilesVisibleState, tilesColors, size }));
+    dispatch(
+      setBoard({ tilesVisibleState, tilesColors, size, currentScore: 0 })
+    );
   };
 };
 
@@ -79,14 +83,19 @@ const lockBoard = () => ({
 const incrementScore = () => ({
   type: actionTypes.INCREMENT_SCORE
 });
+const nextLevel = () => ({
+  type: actionTypes.NEXT_LEVEL
+});
 
 export const tileClicked = (rowIndex, columnIndex) => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const {
       tilesColors,
       temporarilyVisible,
       tilesVisibleState,
-      isBoardLocked
+      isBoardLocked,
+      currentScore,
+      size
     } = getState()?.gameBoard;
     const isAlreadyClicked =
       temporarilyVisible.length === 1 &&
@@ -113,12 +122,18 @@ export const tileClicked = (rowIndex, columnIndex) => {
     ) {
       tilesVisibleState[tile1.rowIndex][tile1.columnIndex] = true;
       tilesVisibleState[tile2.rowIndex][tile2.columnIndex] = true;
-      dispatch(setTilesVisibility(tilesVisibleState, []));
+
       dispatch(incrementScore());
+      if (currentScore + 2 >= size * size)
+        setTimeout(() => {
+          dispatch(nextLevel());
+          dispatch(initBoard());
+        }, NEXT_LEVEL_TIMEOUT_MS);
+      else dispatch(setTilesVisibility(tilesVisibleState, []));
     } else dispatch(lockBoard());
     setTimeout(
       () => dispatch(setTilesVisibility(tilesVisibleState, [])),
-      TIMEOUT_MS
+      TILE_TIMEOUT_MS
     );
   };
 };
