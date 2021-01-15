@@ -57,14 +57,22 @@ const getRandomTiles = size => {
 
 export const initBoard = () => {
   return (dispatch, getState) => {
+    let { size, cumulativeScore } = getState()?.gameBoard;
     const preSavedSize = localStorage.getItem("size") || 0;
-    const size = Math.max(preSavedSize, getState()?.gameBoard?.size);
+    cumulativeScore = preSavedSize ? preSavedSize * preSavedSize : cumulativeScore;
+    size = Math.max(preSavedSize, getState()?.gameBoard?.size);
     let tilesVisibleState = Array.apply(null, Array(size)).map(() =>
       Array.apply(null, Array(size)).map(() => false)
     );
     let tilesColors = getRandomTiles(size);
     dispatch(
-      setBoard({ tilesVisibleState, tilesColors, size, currentScore: 0 })
+      setBoard({
+        tilesVisibleState,
+        tilesColors,
+        size,
+        cumulativeScore,
+        currentScore: 0
+      })
     );
   };
 };

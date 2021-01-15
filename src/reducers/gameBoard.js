@@ -35,6 +35,7 @@ export default (state = initialState, action) => {
         cumulativeScore: state.cumulativeScore + 2
       };
     case actionTypes.NEXT_LEVEL:
+      localStorage.setItem("size", ""+state.cumulativeScore);
       return {
         ...state,
         size: state.size < 8 ? state.size * 2 : 2
